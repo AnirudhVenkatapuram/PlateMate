@@ -8,7 +8,8 @@ const Welcome = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Welcome to My App!</Text>
-      <Button title="Go to Home" onPress={() => router.push('/HomeScreen')} />
+      <Button title="Log In!" onPress={() => router.push('/LoginScreen')} />
+      <Button title="Sign Up!" onPress={() => router.push('/SignUpScreen')} />
     </View>
   );
 };

@@ -15,7 +15,7 @@ const Index = () => {
     }
   }, [isReady]);
 
-  return null; // You might render a splash screen or loading indicator here instead of null
+  return null; 
 };
 
 export default Index;
