@@ -1,10 +1,27 @@
 import React, { useState } from 'react';
 import { View, Text, Button, TextInput, StyleSheet } from 'react-native';
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { useRouter } from 'expo-router';
+import { auth } from '../config/firebase'
 
 const SignUpScreen = ({ navigation }) => {
+  const router = useRouter();
   const [fullName, setFullName] = useState('');
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const handleSubmit = async () => {
+    if(email && password) {
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        router.push('/HomeScreen')
+      }
+
+      catch(err) {
+        console.log('Error: ', err.message)
+      }
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -14,26 +31,26 @@ const SignUpScreen = ({ navigation }) => {
         style={styles.input}
         placeholder="Full Name"
         value={fullName}
-        onChangeText={setFullName}
-        autoCapitalize="words" // Automatically capitalize the first letter of each word
+        onChangeText={value => setFullName(value)}
+        autoCapitalize="words" 
       />
       <TextInput
         style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
+        placeholder="Email"
+        value={email}
+        onChangeText={value => setEmail(value)}
         autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
         placeholder="Password"
         value={password}
-        onChangeText={setPassword}
+        onChangeText={value => setPassword(value)}
         secureTextEntry={true} // Hide password input
         autoCapitalize="none"
       />
 
-      <Button title="Sign Up" onPress={() => navigation.replace('/HomeScreen')} />
+      <Button title="Sign Up" onPress={handleSubmit} />
     </View>
   );
 };
