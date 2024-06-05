@@ -1,5 +1,3 @@
-import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
@@ -25,8 +23,8 @@ export default function IntroScreen() {
             {/*logo image with rings */}
             <Animated.View className= "bg-white/20 rounded-full" style={{padding: ring2padding}}>
                 <Animated.View className= "bg-white/20 rounded-full" style={{padding: ring1padding}}>
-                    <Image source={require("../../assets/images/react-logo@3x.png")}//change this
-                        style={{width: hp(20), height: hp(20)}} />
+                    {/* <Image source={require("../../assets/images/react-logo@3x.png")}//change this
+                        style={{width: hp(20), height: hp(20)}} /> */}
                 </Animated.View>
             </Animated.View>
 
