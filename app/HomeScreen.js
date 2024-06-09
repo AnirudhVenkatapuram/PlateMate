@@ -1,47 +1,71 @@
-// import React from 'react';
-// import { View, Text, StyleSheet, Button } from 'react-native';
-// import { signOut } from 'firebase/auth'
-// import { auth } from '../config/firebase'
-
-// const Home = () => {
-
-//   const logout = async () => {
-//     await signOut(auth);
-//   }
-
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.text}>Welcome to the Home Screen!</Text>
-//       {/* <Button title="Logout" onPress={logout} />; */}
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   text: {
-//     fontSize: 24,
-//   },
-// });
-
-// export default Home;
-
 import { View, Text, ScrollView, Image, TextInput, StyleSheet, Button } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { BellIcon, MagnifyingGlassIcon } from 'react-native-heroicons/outline';
-//import Categories from '../components/categories';
-//import axios from 'axios';
-//import Recipes from '../components/recipes';
 import { signOut } from 'firebase/auth';
-import { auth } from '../config/firebase';
+import { auth, db } from '../config/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import Categories from '../components/categories';
+import axios from 'axios';
+import Recipes from '../components/recipes';
 
 export default function HomeScreen() {
+  const [firstName, setFirstName] = useState('');
+  const [activeCategory, setActiveCategory] = useState('Beef');
+  const [categories, setCategories] = useState([]);
+  const [meals, setMeals] = useState([]);
+
+  useEffect(() => {
+    fetchUserName();
+    getCategories();
+    getRecipes();
+  }, []);
+
+  const fetchUserName = async () => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists()) {
+          const fullName = userDoc.data().fullName;
+          const firstName = fullName.split(' ')[0];
+          setFirstName(firstName);
+        }
+      }
+    } catch (error) {
+      console.log('Error fetching user data: ', error);
+    }
+  };
+
+  const handleChangeCategory = (category) => {
+    getRecipes(category);
+    setActiveCategory(category);
+    setMeals([]);
+  };
+
+  const getCategories = async () => {
+    try {
+      const response = await axios.get('https://themealdb.com/api/json/v1/1/categories.php');
+      if (response && response.data) {
+        setCategories(response.data.categories);
+      }
+    } catch (err) {
+      console.log('error: ', err.message);
+    }
+  };
+
+  const getRecipes = async (category = "Miscellaneous") => {
+    try {
+      const response = await axios.get(`https://themealdb.com/api/json/v1/1/filter.php?c=${category}`);
+      if (response && response.data) {
+        setMeals(response.data.meals);
+      }
+    } catch (err) {
+      console.log('error: ', err.message);
+    }
+  };
+
   const logout = async () => {
     await signOut(auth);
   };
@@ -62,7 +86,7 @@ export default function HomeScreen() {
 
         {/* greetings and punchline */}
         <View className="mx-4 space-y-2 mb-2">
-          <Text style={{ fontSize: hp(1.7) }} className="text-neutral-600">Hello, Insert Name Here</Text>
+          <Text style={{ fontSize: hp(1.7) }} className="text-neutral-600">Hello, {firstName}!</Text>
           <View>
             <Text style={{ fontSize: hp(3.8) }} className="font-semibold text-neutral-600">Make your own food,</Text>
           </View>
@@ -82,6 +106,16 @@ export default function HomeScreen() {
           <View className="bg-white rounded-full p-3">
             <MagnifyingGlassIcon size={hp(2.5)} strokeWidth={3} color="gray" />
           </View>
+        </View>
+
+        {/* categories */}
+        <View>
+          {categories.length > 0 && <Categories categories={categories} activeCategory={activeCategory} handleChangeCategory={handleChangeCategory} />}
+        </View>
+
+        {/* recipes */}
+        <View>
+          <Recipes meals={meals} categories={categories} />
         </View>
 
         {/* Logout button */}
