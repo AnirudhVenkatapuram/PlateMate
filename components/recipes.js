@@ -1,6 +1,4 @@
-// PlateMate/app/Recipes.js
-
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import React from 'react';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import MasonryList from '@react-native-seoul/masonry-list';
@@ -12,11 +10,11 @@ import { useRouter } from 'expo-router';
 export default function Recipes({ categories, meals }) {
   const router = useRouter();
   return (
-    <View className="mx-4 space-y-3">
-      <Text style={{ fontSize: hp(3) }} className="font-semibold text-neutral-600">Recipes</Text>
+    <View style={styles.recipesContainer}>
+      <Text style={styles.recipesTitle}>Recipes</Text>
       <View>
         {categories.length === 0 || meals.length === 0 ? (
-          <Loading size="large" className="mt-20" />
+          <Loading size="large" style={styles.loading} />
         ) : (
           <MasonryList
             data={meals}
@@ -37,19 +35,50 @@ const RecipeCard = ({ item, index, router }) => {
   return (
     <Animated.View entering={FadeInDown.delay(index * 100).duration(600).springify().damping(12)}>
       <Pressable
-        style={{ width: '100%', paddingLeft: isEven ? 0 : 8, paddingRight: isEven ? 8 : 0 }}
-        className="flex justify-center mb-4 space-y-1"
+        style={[styles.recipeCard, { paddingLeft: isEven ? 0 : 8, paddingRight: isEven ? 8 : 0 }]}
         onPress={() => router.push(`/recipe-detail/${item.idMeal}`)}
       >
         <CachedImage
           uri={item.strMealThumb}
-          style={{ width: '100%', height: index % 3 === 0 ? hp(25) : hp(35), borderRadius: 35 }}
-          className="bg-black/5"
+          style={[
+            styles.recipeImage,
+            { height: index % 3 === 0 ? hp(25) : hp(35) }
+          ]}
         />
-        <Text style={{ fontSize: hp(1.5) }} className="font-semibold ml-2 text-neutral-600">
+        <Text style={styles.recipeText}>
           {item.strMeal.length > 20 ? item.strMeal.slice(0, 20) + '...' : item.strMeal}
         </Text>
       </Pressable>
     </Animated.View>
   );
 };
+
+const styles = StyleSheet.create({
+  recipesContainer: {
+    marginHorizontal: 16,
+    marginTop: 20,
+  },
+  recipesTitle: {
+    fontSize: hp(3),
+    fontWeight: 'bold',
+    color: 'gray',
+  },
+  loading: {
+    marginTop: 20,
+  },
+  recipeCard: {
+    width: '100%',
+    marginBottom: 16,
+  },
+  recipeImage: {
+    width: '100%',
+    borderRadius: 15,
+    backgroundColor: '#f0f0f0',
+  },
+  recipeText: {
+    fontSize: hp(1.5),
+    fontWeight: 'bold',
+    color: 'gray',
+    marginTop: 8,
+  },
+});

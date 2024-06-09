@@ -55,7 +55,7 @@ export default function HomeScreen() {
     }
   };
 
-  const getRecipes = async (category = "Miscellaneous") => {
+  const getRecipes = async (category = "Beef") => {
     try {
       const response = await axios.get(`https://themealdb.com/api/json/v1/1/filter.php?c=${category}`);
       if (response && response.data) {
@@ -71,39 +71,34 @@ export default function HomeScreen() {
   };
 
   return (
-    <View className="flex-1 bg-white">
+    <View style={styles.container}>
       <StatusBar style="dark" />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 50 }}
-        className="space-y-6 pt-14"
+        style={styles.scrollView}
       >
         {/* avatar and bell icon */}
-        <View className="mx-4 flex-row justify-between items-center mb-2">
-          <Image source={require('../assets/images/avatar.png')} style={{ height: hp(5), width: hp(5.5) }} />
+        <View style={styles.header}>
+          <Image source={require('../assets/images/avatar.png')} style={styles.avatar} />
           <BellIcon size={hp(4)} color="gray" />
         </View>
 
         {/* greetings and punchline */}
-        <View className="mx-4 space-y-2 mb-2">
-          <Text style={{ fontSize: hp(1.7) }} className="text-neutral-600">Hello, {firstName}!</Text>
-          <View>
-            <Text style={{ fontSize: hp(3.8) }} className="font-semibold text-neutral-600">Make your own food,</Text>
-          </View>
-          <Text style={{ fontSize: hp(3.8) }} className="font-semibold text-neutral-600">
-            stay at <Text className="text-amber-400">home</Text>
-          </Text>
+        <View style={styles.greetingsContainer}>
+          <Text style={styles.greetingText}>Hello, {firstName}!</Text>
+          <Text style={styles.punchlineText}>Make your own food,</Text>
+          <Text style={styles.punchlineText}>stay at <Text style={styles.highlightText}>home</Text></Text>
         </View>
 
         {/* search bar */}
-        <View className="mx-4 flex-row items-center rounded-full bg-black/5 p-[6px]">
+        <View style={styles.searchContainer}>
           <TextInput
             placeholder='Search any recipe'
             placeholderTextColor={'gray'}
-            style={{ fontSize: hp(1.7) }}
-            className="flex-1 text-base mb-1 pl-3 tracking-wider"
+            style={styles.searchInput}
           />
-          <View className="bg-white rounded-full p-3">
+          <View style={styles.searchIconContainer}>
             <MagnifyingGlassIcon size={hp(2.5)} strokeWidth={3} color="gray" />
           </View>
         </View>
@@ -128,6 +123,59 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  scrollView: {
+    paddingTop: 14,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginHorizontal: 16,
+    marginBottom: 8,
+  },
+  avatar: {
+    height: hp(5),
+    width: hp(5.5),
+  },
+  greetingsContainer: {
+    marginHorizontal: 16,
+    marginBottom: 8,
+  },
+  greetingText: {
+    fontSize: hp(1.7),
+    color: 'gray',
+  },
+  punchlineText: {
+    fontSize: hp(3.8),
+    fontWeight: 'bold',
+    color: 'gray',
+  },
+  highlightText: {
+    color: 'orange',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 16,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 25,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: hp(1.7),
+    paddingLeft: 8,
+  },
+  searchIconContainer: {
+    backgroundColor: 'white',
+    borderRadius: 25,
+    padding: 6,
+  },
   logoutContainer: {
     margin: 20,
     alignItems: 'center',
