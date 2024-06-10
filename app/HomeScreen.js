@@ -12,7 +12,7 @@ import Recipes from '../components/recipes';
 
 export default function HomeScreen() {
   const [firstName, setFirstName] = useState('');
-  const [activeCategory, setActiveCategory] = useState('Beef');
+  const [activeCategory, setActiveCategory] = useState('Miscellaneous');
   const [categories, setCategories] = useState([]);
   const [meals, setMeals] = useState([]);
 
@@ -55,7 +55,7 @@ export default function HomeScreen() {
     }
   };
 
-  const getRecipes = async (category = "Beef") => {
+  const getRecipes = async (category = 'Miscellaneous') => {
     try {
       const response = await axios.get(`https://themealdb.com/api/json/v1/1/filter.php?c=${category}`);
       if (response && response.data) {
@@ -80,8 +80,10 @@ export default function HomeScreen() {
       >
         {/* avatar and bell icon */}
         <View style={styles.header}>
-          <Image source={require('../assets/images/avatar.png')} style={styles.avatar} />
-          <BellIcon size={hp(4)} color="gray" />
+          <View style={styles.avatarContainer}>
+            <Image source={require('../assets/images/avatar.png')} style={styles.avatar} />
+          </View>
+          <BellIcon size={hp(4)} color="gray" style={styles.bellIcon} />
         </View>
 
         {/* greetings and punchline */}
@@ -104,12 +106,12 @@ export default function HomeScreen() {
         </View>
 
         {/* categories */}
-        <View>
+        <View style={styles.categoriesContainer}>
           {categories.length > 0 && <Categories categories={categories} activeCategory={activeCategory} handleChangeCategory={handleChangeCategory} />}
         </View>
 
         {/* recipes */}
-        <View>
+        <View style={styles.recipesContainer}>
           <Recipes meals={meals} categories={categories} />
         </View>
 
@@ -140,6 +142,11 @@ const styles = StyleSheet.create({
   avatar: {
     height: hp(5),
     width: hp(5.5),
+    borderRadius: hp(5) / 2, // to make it round
+    marginBottom: 8, // adjust margin as needed
+  },
+  bellIcon: {
+    marginTop: 20, // adjust margin as needed
   },
   greetingsContainer: {
     marginHorizontal: 16,
@@ -165,6 +172,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingHorizontal: 12,
     paddingVertical: 6,
+    marginBottom: 12, // added margin for spacing
   },
   searchInput: {
     flex: 1,
@@ -175,6 +183,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 25,
     padding: 6,
+  },
+  categoriesContainer: {
+    marginTop: 8, // added margin to space categories from the search bar
+    marginBottom: 8, // adjust margin as needed
+  },
+  recipesContainer: {
+    marginHorizontal: 1,
+    marginTop: 1,
   },
   logoutContainer: {
     margin: 20,
