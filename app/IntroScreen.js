@@ -17,7 +17,7 @@ export default function IntroScreen() {
         setTimeout(()=> ring2padding.value = withSpring(ring2padding.value+hp(5)), 300);
     }, [])
     return (
-        <View className="flex-1 justify center items-center space y-10 bg-amber-500">
+        <View className="flex-1 justify center items-centera space y-10 bg-amber-500">
             <StatusBar style= "light" />
 
             {/*logo image with rings */}
