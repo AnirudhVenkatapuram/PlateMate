@@ -66,10 +66,6 @@ export default function HomeScreen() {
     }
   };
 
-  const logout = async () => {
-    await signOut(auth);
-  };
-
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
